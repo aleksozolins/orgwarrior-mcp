@@ -261,6 +261,10 @@ def test_views_and_new_heading(ow, tmp_path, monkeypatch):
 
 
 def test_files_and_clocks(ow):
+    # Clocking relative to now in several calls: a minute passing between
+    # them would add one to org's whole-minute clock lines.
+    if (second := time.localtime().tm_sec) >= 50:
+        time.sleep(60.2 - second)
     server = make_server(ow)
     [(files, _)] = calls(server, ("files", {}))
     assert sorted(files.splitlines()) == ["calendar.org", "inbox.org", "projects.org", "tasks.org"]
