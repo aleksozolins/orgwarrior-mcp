@@ -78,10 +78,13 @@ file, never committed, holds the maintainer's own setup and to-do.
   "Terminating session" after every stateless request).
 
 ## Published
-- **One install for all three commands** (`--with-executables-from
-  orgwarrior,orgwarrior-web`, checked from a clean tool dir): two installs
-  would each load their own engine into Emacs, reloading it at every
-  switch. orgwarrior-web's README points here for anyone wanting both.
+- **One install for all three commands**: the package declares
+  orgwarrior's and orgwarrior-web's entry points beside its own, so `uv
+  tool install orgwarrior-mcp` gives all three (checked from a clean
+  home): two installs would each load their own engine into Emacs,
+  reloading it at every switch. PyPI only: Arch's python-mcp is 1.x, so no
+  AUR package; the Homebrew formula is orgwarrior and orgwarrior-web's.
+  orgwarrior-web's README points here for anyone wanting both.
 - **The README** follows the siblings' shape (logo, the porcelain diagram
   with all three, then each subject). "Which one?" first: where
   Claude has a shell on the machine with Emacs, the CLI and its skill
@@ -97,5 +100,5 @@ file, never committed, holds the maintainer's own setup and to-do.
   checkout), through the SDK's in-process client; sign-in over HTTP; the
   command over stdio.
 - orgwarrior and orgwarrior-web come from the checkouts beside this one
-  (`[tool.uv.sources]`), from GitHub for an install with `--no-sources`.
+  (`[tool.uv.sources]`), from PyPI when installed.
 - Commit messages: no AI-attribution footers.

@@ -82,20 +82,20 @@ they should go.
 ## Install
 
 On the machine with your Emacs. You need **Emacs 29 or later running as a
-daemon** (`emacs --daemon`, or your system's Emacs service) and
-**[uv](https://docs.astral.sh/uv/getting-started/installation/)**. One
-install gives all three commands, `orgwarrior-mcp`, `orgwarrior` and
-`orgwarrior-web` (whose `token` command signs Claude in):
+daemon** (`emacs --daemon`, or your system's Emacs service) and Python
+3.11+. One install gives all three commands, `orgwarrior-mcp`,
+`orgwarrior` and `orgwarrior-web` (whose `token` command signs Claude in):
 
 ```sh
-uv tool install --no-sources --with-executables-from orgwarrior,orgwarrior-web \
-  git+https://github.com/aleksozolins/orgwarrior-mcp
+uv tool install orgwarrior-mcp     # or: pipx install orgwarrior-mcp
 ```
 
-Update with `uv tool upgrade orgwarrior-mcp`, which brings the other two
-along. If you installed orgwarrior or orgwarrior-web on its own first,
-`uv tool uninstall` it before: one install carries all three, and two
-would each load their own copy of the engine into Emacs.
+Update with `uv tool upgrade orgwarrior-mcp` (or `pipx upgrade`), which
+brings the other two along. If you installed orgwarrior or orgwarrior-web
+on its own first with pipx or uv, uninstall it before: one install carries
+all three, one copy of the engine. Beside Homebrew's or the AUR's it works
+too, though Emacs then reloads the engine whenever you switch between
+them.
 
 ## Quick start: claude.ai
 
@@ -293,7 +293,7 @@ uv run pytest                  # every tool against a throwaway Emacs, over stdi
 
 The three checkouts sit side by side: orgwarrior-mcp takes orgwarrior and
 orgwarrior-web from `../` for development (`[tool.uv.sources]`), from
-GitHub for an install from GitHub (`--no-sources`). The tests run each
+PyPI when installed. The tests run each
 tool against a throwaway `emacs -Q` daemon on orgwarrior's test fixtures:
 your own Emacs, config and Org files are never touched.
 
