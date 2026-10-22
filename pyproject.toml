@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
+authors = [{ name = "Aleks Ozolins", email = "aleks@ozolins.xyz" }]
 keywords = ["org-mode", "emacs", "agenda", "mcp", "claude", "tasks"]
 classifiers = [
     "Environment :: Console",
@@ -16,8 +17,8 @@ classifiers = [
 ]
 dependencies = [
     "mcp==2.3.0",
-    "orgwarrior @ git+https://github.com/aleksozolins/orgwarrior",
-    "orgwarrior-web @ git+https://github.com/aleksozolins/orgwarrior-web",
+    "orgwarrior>=0.1.0",
+    "orgwarrior-web>=0.1.0",
 ]
 
 [project.urls]
@@ -26,6 +27,9 @@ Issues = "https://github.com/aleksozolins/orgwarrior-mcp/issues"
 
 [project.scripts]
 orgwarrior-mcp = "orgwarrior_mcp.server:main"
+# Its dependencies' commands too: one install gives all three, one copy of the engine.
+orgwarrior = "orgwarrior.cli:main"
+orgwarrior-web = "orgwarrior_web.server:main"
 
 [build-system]
 requires = ["hatchling>=1.27"]  # 1.27: license as SPDX (PEP 639)
@@ -34,15 +38,16 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = ["pytest"]
 
-# From GitHub for an install from GitHub (uv tool install --no-sources);
-# from the checkouts beside this one for development, so the tests use
-# orgwarrior's fixtures and both packages' own code.
+# From the checkouts beside this one for development, so the tests use
+# orgwarrior's fixtures and both packages' own code; a published package
+# carries none of this.
 [tool.uv.sources]
 orgwarrior = { path = "../orgwarrior", editable = true }
 orgwarrior-web = { path = "../orgwarrior-web", editable = true }
 
-[tool.hatch.metadata]
-allow-direct-references = true
+# CLAUDE.md is notes for working on the code, CLAUDE.local.md the maintainer's own.
+[tool.hatch.build.targets.sdist]
+exclude = ["CLAUDE.md", "CLAUDE.local.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

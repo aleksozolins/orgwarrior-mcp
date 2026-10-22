@@ -1,4 +1,4 @@
-<h1><img src="docs/logo.svg" alt="" width="44" align="top"> orgwarrior-mcp</h1>
+<h1><img src="https://raw.githubusercontent.com/aleksozolins/orgwarrior-mcp/main/docs/logo.svg" alt="" width="44" align="top"> orgwarrior-mcp</h1>
 
 **A porcelain for Org's agenda, for Claude.** An
 [MCP](https://modelcontextprotocol.io) server over
@@ -302,4 +302,4 @@ is reviewed by me, and every behavior is covered by real tests.
 
 ## License
 
-[GPL-3.0-or-later](LICENSE), as Emacs and Org are.
+[GPL-3.0-or-later](https://github.com/aleksozolins/orgwarrior-mcp/blob/main/LICENSE), as Emacs and Org are.
