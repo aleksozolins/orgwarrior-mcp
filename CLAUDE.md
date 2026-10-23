@@ -40,7 +40,7 @@ file, never committed, holds the maintainer's own setup and to-do.
   Emacs shows it, links by their description, and wouldn't match),
   check (by the item's text, set rather than toggled), add_task and add_event (by fields: nothing in a title is read as
   syntax; a done keyword with `closed` for an imported task, its own date
-  kept), set_state, schedule, deadline, tag, set_priority, set_effort,
+  kept), set_state, schedule, deadline, set_when (an event's date), tag, set_priority, set_effort,
   set_property, add_note, history, edit_note and remove_note (by history's
   number, the item's raw text read again as `old`), move (up, down,
   promote, demote), reorder (all of a parent's children, or a file's top

@@ -66,7 +66,7 @@ Nothing here reads or writes your Org files itself.
 | `check` | tick or untick a checkbox, its `[1/3]` following |
 | `add_task`, `add_event` | where your `[add]` says, or wherever you say; a task already done (an import) keeps its done date |
 | `places`, `files` | where an add can go, your `[add]`'s place first; your agenda files |
-| `set_state`, `schedule`, `deadline`, `tag`, `set_priority`, `set_effort`, `set_property`, `add_note`, `rename` | one field each, as Org changes it |
+| `set_state`, `schedule`, `deadline`, `set_when` (an event's date), `tag`, `set_priority`, `set_effort`, `set_property`, `add_note`, `rename` | one field each, as Org changes it |
 | `history`, `edit_note`, `remove_note` | a task's log (notes, state changes), numbered; changing or deleting one (remove marked destructive) |
 | `move`, `reorder` | up, down, promote, demote with the subtree, as M-arrows do; a heading's children in a new order |
 | `clock`, `clock_in`, `clock_out` | what's running; clocking in or out now or at a time you forgot |

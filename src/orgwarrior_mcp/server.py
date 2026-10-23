@@ -71,7 +71,7 @@ agenda's QUERY is what follows the orgwarrior command:
 
 {views}
 
-Dates (schedule, deadline, add's fields, and as views):
+Dates (schedule, deadline, set_when, add's fields, and as views):
 
 {dates}"""
 
@@ -334,6 +334,13 @@ def make_server(ow: Orgwarrior) -> MCPServer:
     def deadline(ids: IDS, date: Annotated[str, Field(description="as in the instructions; none removes it")]) -> str:
         """Set DEADLINE: when it's due."""
         return act(ids, "due", shlex.split(date) or ["none"])
+
+    @mcp.tool(annotations=WRITE)
+    def set_when(ids: IDS, date: Annotated[str, Field(description="as in the instructions; none removes it")]) -> str:
+        """Set an event's date: its plain timestamp, as add_event's `when`
+        wrote it. To move an event, this, not schedule (which would add a
+        second date)."""
+        return act(ids, "when", shlex.split(date) or ["none"])
 
     @mcp.tool(annotations=WRITE)
     def tag(ids: IDS, add: list[str] = [], remove: list[str] = []) -> str:

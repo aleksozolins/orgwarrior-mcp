@@ -111,6 +111,10 @@ def test_tools(ow):
 
     [(event, err)] = calls(server, ("add_event", {"title": "Dentist", "when": "fri 10:30"}))
     assert not err and "Dentist" in event
+    dentist = event.split()[0]
+    [(moved, err), (shown, _)] = calls(server, ("set_when", {"ids": [dentist], "date": "2026-12-26 11:00"}),
+                                       ("show", {"ids": [dentist]}))
+    assert not err and "<2026-12-26 Sat 11:00>" in shown and "SCHEDULED" not in shown
 
 
 def test_kill(ow):
