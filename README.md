@@ -273,8 +273,9 @@ command does: where `add_task` writes, your `[views]`, the socket.
 - **New tools don't show**: start a new conversation (claude.ai) or
   session (Claude Code, or `/mcp` to reconnect).
 - Anything Org refuses (an unknown ID, a date it can't read, a file with
-  unsaved changes in Emacs) comes back to Claude as orgwarrior's own
-  message, for it to correct.
+  unsaved changes in Emacs, a read-only file such as a calendar exported
+  to org) comes back to Claude as orgwarrior's own message, for it to
+  correct.
 
 ## Contributing
 
