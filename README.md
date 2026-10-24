@@ -87,10 +87,15 @@ where they should go.
 ## Install
 
 Install it on the machine with your Emacs. You'll need Emacs 29 or later
-running as a daemon (`emacs --daemon`, or your system's Emacs service), and
-Python 3.11 or later. One install gives you all three commands:
+with its server running and your org settings loaded
+([orgwarrior's quick start](https://github.com/aleksozolins/orgwarrior#quick-start)
+has the details and a starter init file), and Python 3.11 or later. One install gives you all three commands:
 `orgwarrior-mcp`, `orgwarrior`, and `orgwarrior-web` (its `token` command
 signs Claude in).
+
+If you already installed orgwarrior or orgwarrior-web with pipx or uv,
+uninstall it first (`uv tool uninstall orgwarrior-web`), since this one
+brings its own copy and the install would fail.
 
 ```sh
 uv tool install orgwarrior-mcp     # or: pipx install orgwarrior-mcp
@@ -100,10 +105,8 @@ uv tool install orgwarrior-mcp     # or: pipx install orgwarrior-mcp
 config are ready, and says what to fix.
 
 To update, run `uv tool upgrade orgwarrior-mcp` (or `pipx upgrade
-orgwarrior-mcp`), which updates the other two as well. If you installed
-orgwarrior or orgwarrior-web on its own first with pipx or uv, uninstall
-it before installing this, since this one brings its own copy. It also
-works alongside the Homebrew or AUR packages, but Emacs then reloads
+orgwarrior-mcp`), which updates the other two as well. It also works
+alongside the Homebrew or AUR packages, but Emacs then reloads
 orgwarrior's code whenever you switch between them.
 
 ## Quick start: claude.ai
