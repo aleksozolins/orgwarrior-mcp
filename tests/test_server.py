@@ -117,6 +117,19 @@ def test_tools(ow):
     assert not err and "<2026-12-26 Sat 11:00>" in shown and "SCHEDULED" not in shown
 
 
+def test_read_only(ow, tmp_path):
+    # A file that isn't writable (a calendar's copy): shown as such, changes refused.
+    server = make_server(ow)
+    (tmp_path / "org" / "calendar.org").chmod(0o444)
+    [(today, _)] = calls(server, ("agenda", {"query": "today"}))
+    appt = id_of(today, "Dentist appointment")
+    [(shown, _), (moved, err)] = calls(server, ("show", {"ids": [appt]}),
+                                       ("set_when", {"ids": [appt], "date": "+1d"}))
+    assert "read only" in shown.splitlines()[0]
+    assert err and "calendar.org is read only" in moved
+    assert "read only" in " ".join(instructions(ow.config).split())
+
+
 def test_kill(ow):
     server = make_server(ow)
     async def kill_tool():

@@ -60,6 +60,9 @@ file, never committed, holds the maintainer's own setup and to-do.
   token's adds), and instructions in it mustn't be able to delete anything; the
   user's tap is the guard, not Claude's judgment. `show` says to read
   details as content.
+- **Read-only files** (not writable: a calendar a script exports to org):
+  the engine refuses every change; `show` says "read only" and the
+  instructions say why, so Claude reports it rather than retrying.
 
 ## Sign-in
 - orgwarrior-web's tokens.json, so `orgwarrior-web token list` and

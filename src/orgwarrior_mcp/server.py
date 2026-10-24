@@ -54,6 +54,11 @@ archive files (everything ever archived) with agenda's archive=true; an
 archived task's ID shows it, but nothing changes it. Kill only on the
 user's request, after they've seen and confirmed what goes.
 
+A task show() marks "read only" is in a file that isn't writable, usually
+a copy of another calendar (Google's, say) a script exports to org: every
+change to it is refused. Read it like any other; to change it, the user
+changes it where it comes from.
+
 Clocking: clock_in and clock_out, now or at a forgotten time; time already
 spent ("log an hour on it yesterday") with log_time, which leaves a running
 clock alone (clock_in at a past time would close it then). A task's clocks:
