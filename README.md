@@ -86,15 +86,17 @@ where they should go.
 
 ## Install
 
-Install it on the machine with your Emacs. You'll need Emacs 29 or later
-with its server running and your org settings loaded
-([orgwarrior's quick start](https://github.com/aleksozolins/orgwarrior#quick-start)
-has the details and a starter init file), and Python 3.11 or later. One install gives you all three commands:
+Install it on the machine with your Emacs. You'll need Python 3.11 or
+later, and Emacs 29 or later with its server running and your org
+settings loaded.
+[orgwarrior's quick start](https://github.com/aleksozolins/orgwarrior#quick-start)
+has the details and a starter init file. One install gives you all three commands:
 `orgwarrior-mcp`, `orgwarrior`, and `orgwarrior-web` (its `token` command
 signs Claude in).
 
 If you already installed orgwarrior or orgwarrior-web with pipx or uv,
-uninstall it first (`uv tool uninstall orgwarrior-web`), since this one
+uninstall it first (`uv tool uninstall orgwarrior-web`, or `pipx
+uninstall orgwarrior-web`), since this one
 brings its own copy and the install would fail.
 
 ```sh
