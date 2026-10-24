@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2 (2026-10-24)
+
+- The Install section gives the pipx uninstall command too, and reads more
+  simply.
+
 ## 0.3.1 (2026-10-24)
 
 Needs orgwarrior 0.4.2.
