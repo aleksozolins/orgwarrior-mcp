@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 (2026-10-24)
+
+Needs orgwarrior 0.4.2.
+
+- The Install section says what to uninstall before installing, rather
+  than after, and points to orgwarrior's quick start for setting up Emacs.
+
 ## 0.3.0 (2026-10-24)
 
 Needs orgwarrior 0.4.0 and orgwarrior-web 0.4.0.
