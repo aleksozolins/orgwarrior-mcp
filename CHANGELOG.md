@@ -4,11 +4,16 @@
 
 Needs orgwarrior 0.4.0 and orgwarrior-web 0.4.0.
 
-- **`orgwarrior-mcp service`** prints a systemd unit, or a launch agent on
-  a Mac, that keeps the server running, with the full paths filled in.
-- Plainer error messages, for Claude and for you.
-- The README is rewritten to be shorter and clearer, and points to
-  `orgwarrior --check` for checking your setup.
+- **`orgwarrior-mcp service [OPTION…]`** prints a systemd user unit, or a
+  launch agent on a Mac, that keeps the server running, with the full
+  paths filled in and the steps in comments at the top. It shares
+  orgwarrior-web's code, so the two can't drift apart.
+- **Plainer messages**: tool errors Claude sees say what to do next ("That
+  text isn't in its details. Read details() again"), and so do the
+  server's own and its `--help`.
+- **The README** is rewritten to be shorter and clearer. It points to
+  `orgwarrior --check` for checking your setup, and its service section
+  uses the new command.
 
 ## 0.2.1 (2026-10-23)
 
