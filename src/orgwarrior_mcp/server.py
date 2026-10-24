@@ -33,6 +33,7 @@ from mcp.server.transport_security import TransportSecuritySettings
 from mcp_types import ToolAnnotations
 from orgwarrior import OrgwarriorError, cli, help as helpmod
 from orgwarrior.api import Orgwarrior
+from orgwarrior_web import setup
 from orgwarrior_web.auth import Tokens, default_path
 from orgwarrior_web.server import SavedTabs, is_loopback, tab_row
 from pydantic import Field
@@ -185,12 +186,12 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         try:
             command, socket = cli.parse(shlex.split(query), ow.config)
         except ValueError as e:
-            raise ToolError(f"Can't read that query: {e}") from None
+            raise ToolError(f"Can't read that query ({e})") from None
         except OrgwarriorError as e:
             raise ToolError(str(e)) from None
         painter = cli.Painter(None)
         if socket:
-            raise ToolError("No --socket here: this server has its daemon")
+            raise ToolError("--socket doesn't work here, since this server already has its Emacs")
         match command:
             case cli.View():
                 return view(query, archive)
@@ -198,7 +199,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
                 return tree(engine(ow.outline, file)["children"]) or "No headings."
             case cli.Report(words, archived):
                 return printed(cli.print_report, engine(ow.report, words, archive or archived), painter)
-        raise ToolError("Not a view: show reads a task, the other tools change them")
+        raise ToolError("That isn't a view. Use show to read a task, and the other tools to change one")
 
     def view(query: str, archive: bool = False) -> str:
         lines = engine(ow.view, query, archive=archive)
@@ -256,8 +257,8 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         if old_text is None:
             text = f"{body}\n{new_text}" if body else new_text
         elif (n := body.count(old_text)) != 1:
-            raise ToolError("That text isn't in its details: read details() again" if not n
-                            else f"That text is there {n} times: include more around it")
+            raise ToolError("That text isn't in its details. Read details() again" if not n
+                            else f"That text is there {n} times. Include more of what's around it")
         else:
             text = body.replace(old_text, new_text)
         r = engine(ow.set_entry, id, text, body)
@@ -276,7 +277,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         if len(found) != 1:
             listed = "\n".join(f"[{'X' if b['state'] == 'on' else ' '}] {b['text']}" for b in boxes)
             raise ToolError((f"No checkbox matches {item!r}" if not found else f"{item!r} matches several")
-                            + (f"; its checkboxes:\n{listed}" if boxes else "; it has none"))
+                            + (f". Its checkboxes are:\n{listed}" if boxes else ". It has none"))
         n, box = found[0]
         if (box["state"] == "on") == checked:
             return f"Already {'ticked' if checked else 'unticked'}: {box['text']}"
@@ -352,7 +353,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         """Add and remove tags (without colons: @phone). A tag from a group
         replaces the others of its group, as in Emacs."""
         if not add and not remove:
-            raise ToolError("Nothing to add or remove")
+            raise ToolError("There's nothing to add or remove")
         return act(ids, "tag", [f"+{t.strip(':')}" for t in add] + [f"-{t.strip(':')}" for t in remove])
 
     @mcp.tool(annotations=WRITE)
@@ -378,7 +379,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
     def log_item(id: str, n: int) -> dict:
         found = next((h for h in engine(ow.show, id)["history"] if h["n"] == n), None)
         if not found:
-            raise ToolError(f"No log item {n}: history() numbers them")
+            raise ToolError(f"There's no history entry {n}. history() lists them by number")
         return found
 
     @mcp.tool(annotations=WRITE)
@@ -418,7 +419,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         M-left do in Emacs. Promote and demote can change their IDs: the
         answer shows the new ones."""
         if direction not in ("up", "down", "promote", "demote"):
-            raise ToolError("direction is up, down, promote or demote")
+            raise ToolError("direction has to be up, down, promote or demote")
         return act(ids, direction)
 
     @mcp.tool(annotations=WRITE)
@@ -431,7 +432,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         order: show() or agenda("FILE.org") lists them. Refused if they
         changed since."""
         if (parent is None) == (file is None):
-            raise ToolError("Give the parent heading's ID or the file, one of them")
+            raise ToolError("Give either the parent heading's ID or the file")
         return headings(engine(ow.reorder, ids, parent, file))
 
     @mcp.tool(annotations=WRITE)
@@ -537,7 +538,7 @@ def make_server(ow: Orgwarrior) -> MCPServer:
         out: where the user's config puts new ones). Their IDs change: the
         answer shows old → new."""
         if not target and not new_heading:
-            raise ToolError("Refile to where? A target, or a new_heading")
+            raise ToolError("Give a target to refile to, or a new_heading to make")
         return headings(engine(ow.act, ids, "refile", [target] if target else [], new=new_heading))
 
     @mcp.tool(annotations=ToolAnnotations(read_only_hint=False, destructive_hint=True, open_world_hint=False))
@@ -648,8 +649,8 @@ def make_app(ow: Orgwarrior, host: str, tokens: Tokens):
     """The server as an ASGI app at /mcp.  Off loopback, only once a token exists."""
     loopback = is_loopback(host)
     if not loopback and not tokens.load():
-        raise OrgwarriorError(f"no token yet, and {host} isn't loopback: "
-                              "make one first (orgwarrior-web token add claude --mcp)")
+        raise OrgwarriorError(f"there's no token yet, and off this machine ({host}) one is needed. "
+                              "Make one first: orgwarrior-web token add claude --mcp")
     # Stateless, plain JSON answers: nothing kept between requests, so a
     # restart or a proxy in between loses nothing.  The SDK's Host check is
     # off: BearerAuth's covers the open case, and a proxy sends its own Host.
@@ -659,21 +660,32 @@ def make_app(ow: Orgwarrior, host: str, tokens: Tokens):
     return BearerAuth(app, tokens, loopback)
 
 
-def main(argv: list[str] | None = None) -> int:
+def server_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="orgwarrior-mcp", description="Serve the org agenda as MCP tools: over HTTP at /mcp, "
-        "signed in with an orgwarrior-web token (orgwarrior-web token add claude --mcp), or with "
-        "--stdio to a client on this machine that starts it.")
+        prog="orgwarrior-mcp", description="Serve your org agenda to Claude, or any MCP client, as "
+        "tools. Over HTTP it listens at /mcp and clients sign in with an orgwarrior-web token "
+        "(orgwarrior-web token add claude --mcp). With --stdio, a client on this machine starts "
+        "it and talks to it directly.",
+        epilog="`orgwarrior-mcp service [OPTION...]` prints a service that keeps it running. "
+        "`orgwarrior --check` checks your Emacs setup.")
     ap.add_argument("--stdio", action="store_true",
-                    help="talk MCP on stdin and stdout, for a client that runs this command: "
-                    "no network, no token")
+                    help="speak MCP on stdin and stdout, for a client that runs this command "
+                    "itself (no network, no token)")
     ap.add_argument("--host", default="127.0.0.1",
-                    help="address to listen on (default 127.0.0.1, where it's open until a token "
-                    "is made; anywhere else it needs one)")
-    ap.add_argument("--port", type=int, default=22548)
-    ap.add_argument("-s", "--socket", help="emacsclient socket name")
+                    help="the address to listen on (default 127.0.0.1, which is open until you "
+                    "make a token; any other address needs one)")
+    ap.add_argument("--port", type=int, default=22548, help="the port (default 22548)")
+    ap.add_argument("-s", "--socket", help="the Emacs server socket's name or full path, if it "
+                    "isn't the default")
     ap.add_argument("--version", action="version", version=f"orgwarrior-mcp {__version__}")
-    args = ap.parse_args(sys.argv[1:] if argv is None else argv)
+    return ap
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["service"]:
+        return setup.service_main(argv[1:], server_parser(), name="orgwarrior-mcp", example="--port 22548")
+    args = server_parser().parse_args(argv)
     if args.stdio:
         make_server(Orgwarrior(socket=args.socket)).run("stdio")
         return 0

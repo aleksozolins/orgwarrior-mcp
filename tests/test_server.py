@@ -76,7 +76,7 @@ def test_tools(ow):
     assert shown.startswith(rent) and "Pay rent" in shown
     assert bad_err and "zzzz" in bad  # orgwarrior's own message, for Claude to read
     assert "Orgwarrior" in outline
-    assert nope_err and "Not a view" in nope  # actions have tools of their own
+    assert nope_err and "isn't a view" in nope  # actions have tools of their own
 
     # Added by fields: nothing in the title is read as a date or tag.
     [(added, err)] = calls(server, ("add_task", {"title": "Buy paint fri :x:", "keyword": "NEXT",
@@ -158,7 +158,7 @@ def test_done_and_archives(ow):
         ("agenda", {"query": "juggle", "archive": True}), ("done", {"span": "soon"}))
     assert not err and "DONE Learn to juggle" in done
     assert "(no tasks)" in live and "Learn to juggle" in archived
-    assert old_err and "Not a span" in old
+    assert old_err and "as a span" in old
     [(shown, _)] = calls(server, ("show", {"ids": [id_of(done, "juggle")]}))
     assert "tasks.org_archive" in shown
 
@@ -257,7 +257,7 @@ def test_details_and_checkboxes(ow):
     [(missing, m_err), (none, n_err)] = calls(
         server, ("edit_details", {"id": rent, "old_text": "from checking", "new_text": "x"}),
         ("check", {"id": rent, "item": "groceries"}))
-    assert m_err and "read details() again" in missing
+    assert m_err and "Read details() again" in missing
     assert n_err and "ask the landlord" in none  # the boxes it has, listed
 
 
@@ -378,3 +378,14 @@ def test_more_tools(ow):
     assert kids()[-2] == before[0]
     [(_, neither)] = calls(server, ("reorder", {"ids": before}))
     assert neither
+
+
+def test_service(capsys):
+    # orgwarrior-web's service command, for this server: its name, its options.
+    from orgwarrior_mcp.server import main
+    assert main(["service", "--port", "22549"]) == 0
+    unit = capsys.readouterr().out
+    assert "Description=orgwarrior-mcp" in unit and "orgwarrior-mcp --port 22549" in unit
+    assert "# Save this as ~/.config/systemd/user/orgwarrior-mcp.service" in unit
+    with pytest.raises(SystemExit):
+        main(["service", "--cert", "x"])  # not one of this server's options

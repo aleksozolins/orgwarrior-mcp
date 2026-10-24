@@ -96,6 +96,9 @@ signs Claude in).
 uv tool install orgwarrior-mcp     # or: pipx install orgwarrior-mcp
 ```
 
+`orgwarrior --check` then checks that Emacs, your agenda files and your
+config are ready, and says what to fix.
+
 To update, run `uv tool upgrade orgwarrior-mcp` (or `pipx upgrade
 orgwarrior-mcp`), which updates the other two as well. If you installed
 orgwarrior or orgwarrior-web on its own first with pipx or uv, uninstall
@@ -224,25 +227,16 @@ claude mcp add --transport http orgwarrior https://agenda.example.org/mcp \
 
 ## Running it as a service
 
-On Linux, use a systemd user unit. Save this as
-`~/.config/systemd/user/orgwarrior-mcp.service`:
-
-```ini
-[Unit]
-Description=orgwarrior-mcp
-After=emacs.service
-Wants=emacs.service
-
-[Service]
-ExecStart=%h/.local/bin/orgwarrior-mcp
-Restart=on-failure
-
-[Install]
-WantedBy=default.target
-```
+`orgwarrior-mcp service` prints a service that runs orgwarrior-mcp with the
+options you give it: a systemd user unit on Linux, or a launch agent on a
+Mac. It fills in the command's full path and a `PATH` that finds
+`emacsclient`, with comments at the top saying where to save it and how to
+start it. On Linux:
 
 ```sh
-systemctl --user enable --now orgwarrior-mcp
+mkdir -p ~/.config/systemd/user
+orgwarrior-mcp service > ~/.config/systemd/user/orgwarrior-mcp.service
+systemctl --user daemon-reload && systemctl --user enable --now orgwarrior-mcp
 loginctl enable-linger "$USER"   # keeps it (and Emacs) running when you're logged out
 journalctl --user -u orgwarrior-mcp   # who called which tool, and when
 ```
@@ -257,6 +251,7 @@ conversation or session.
 | `--host` | the address to listen on (default `127.0.0.1`) |
 | `--port` | the port (default `22548`) |
 | `-s`, `--socket` | Emacs's server socket, as a name or a full path. Otherwise it uses orgwarrior's `config.toml`, or the default. |
+| `service [OPTION…]` | prints a service that runs it with these options (see above) |
 
 It reads orgwarrior's `config.toml` (in `~/.config/orgwarrior/`) the same
 way the command does, for where `add_task` writes, your `[views]`, and
@@ -264,7 +259,11 @@ the socket.
 
 ## Troubleshooting
 
-- **"no Emacs daemon running on socket 'server'"**, while `orgwarrior`
+`orgwarrior --check`, run as the same user as the server, checks Emacs,
+your init file, your agenda files and your config, and prints the socket's
+full path.
+
+- **"no Emacs daemon is running"**, while `orgwarrior`
   works in a terminal: the client started `orgwarrior-mcp` with a bare
   environment, missing `XDG_RUNTIME_DIR`, which is where emacsclient looks
   for the socket. Give it the socket's full path, like

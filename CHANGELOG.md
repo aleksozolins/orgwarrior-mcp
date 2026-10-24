@@ -1,8 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (2026-10-24)
 
-- The README is rewritten to be shorter and clearer.
+Needs orgwarrior 0.4.0 and orgwarrior-web 0.4.0.
+
+- **`orgwarrior-mcp service`** prints a systemd unit, or a launch agent on
+  a Mac, that keeps the server running, with the full paths filled in.
+- Plainer error messages, for Claude and for you.
+- The README is rewritten to be shorter and clearer, and points to
+  `orgwarrior --check` for checking your setup.
 
 ## 0.2.1 (2026-10-23)
 

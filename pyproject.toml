@@ -1,6 +1,6 @@
 [project]
 name = "orgwarrior-mcp"
-version = "0.2.1"
+version = "0.3.0"
 description = "A porcelain for Org's agenda, for Claude: an MCP server over orgwarrior's engine and your running Emacs"
 requires-python = ">=3.11"
 readme = "README.md"
@@ -17,8 +17,8 @@ classifiers = [
 ]
 dependencies = [
     "mcp==2.3.0",
-    "orgwarrior>=0.3.0",
-    "orgwarrior-web>=0.1.0",
+    "orgwarrior>=0.4.0",
+    "orgwarrior-web>=0.4.0",
 ]
 
 [project.urls]

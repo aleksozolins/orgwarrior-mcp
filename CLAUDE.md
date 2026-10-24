@@ -64,6 +64,10 @@ file, never committed, holds the maintainer's own setup and to-do.
   the engine refuses every change; `show` says "read only" and the
   instructions say why, so Claude reports it rather than retrying.
 
+- **`service`**: orgwarrior-web's `setup.service_main` with this name and
+  this parser, so one unit-writing path for both servers (needs
+  orgwarrior-web 0.4.0).
+
 ## Sign-in
 - orgwarrior-web's tokens.json, so `orgwarrior-web token list` and
   `revoke` cover Claude too: a `full` token, or one of scope `mcp`
@@ -88,7 +92,7 @@ file, never committed, holds the maintainer's own setup and to-do.
   reloading it at every switch. PyPI only: Arch's python-mcp is 1.x, so no
   AUR package; the Homebrew formula is orgwarrior and orgwarrior-web's.
   orgwarrior-web's README points here for anyone wanting both.
-- **The README** follows the siblings' shape (logo, the porcelain diagram
+- **The README** follows the siblings' shape (logo, the diagram
   with all three, then each subject). "Which one?" first: where
   Claude has a shell on the machine with Emacs, the CLI and its skill
   (`orgwarrior help --skill`); this is for where it hasn't. So the quick
